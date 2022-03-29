@@ -1,0 +1,53 @@
+﻿@page
+
+@model CartModel
+@{
+    var items = new (string sku, string name, int price)[]
+    {
+        ("PROART14", "ProArt Display 14",               1499),
+        ("ATEMPRO",  "ProArtATEM Mini Pro ISO",         8990),
+        ("A7S3",     "Sony A7s III",                    39950),
+        ("ELG1",     "Elgato Key Light",                1495),
+        ("NINJAV",   "Atomos Ninja V",                  3999),
+        ("RESOLVE",  "DaVinci Resolve Speed Editor",    3995),
+        ("DPA",      "DPA Mic",                         4500),
+        ("MKH416",   "Sennheiser MKH 416",              11000)
+    };
+
+    // Shuffle
+    items = items.OrderBy(n => Guid.NewGuid()).ToArray();
+
+    var random = new Random();
+
+    var cart = items.Take(random.Next(1, items.Length)).ToArray();
+
+    ViewData["Title"] = $"Your Cart ({cart.Length})";
+}
+<h1>@ViewData["Title"]</h1>
+
+<p>
+    You have two items in your cart!
+</p>
+
+<form method="post">
+    @for(int i = 0; i < cart.Length; i++)
+    {
+        <input type="hidden" name="items[@i].sku" value="@cart[i].sku" />
+        <input type="hidden" name="items[@i].price" value="@cart[i].price" />
+    }
+
+    <h3>Order Summary</h3>
+    <p>
+        <ul>
+            @foreach(var item in cart)
+            {
+                <li>@item.name - @item.price SEK</li>
+            }
+        </ul>
+    </p>
+    <div>
+        <p><strong>Your e-mail</strong></p>
+        <p><input type="email" name="email" value="your@email.com"></p>
+    </div>
+    <input type="submit" value="Purchase">
+</form>
